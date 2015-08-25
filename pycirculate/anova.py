@@ -14,7 +14,7 @@ class AnovaDelegate(btle.DefaultDelegate):
         # print repr(self), "handleNotification(), cHandle: ", cHandle, "data: ",  data
         self._store_notification(cHandle, data)
 
-    def _store_notification(cHandle, data):
+    def _store_notification(self, cHandle, data):
         self.last_notifications.append((cHandle, data))
         # keep the last 10 notifications
         self.last_notifications = self.last_notifications[-10:]
