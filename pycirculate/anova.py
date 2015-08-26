@@ -34,7 +34,12 @@ class AnovaController(object):
         self.characteristic = self.service.getCharacteristics()[0]
 
     def __del__(self):
-        print "__del__ called"
+        self.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
         self.close()
 
     def close(self):
