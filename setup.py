@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pycirculate",
-    version="0.1.0a1",
+    version="0.1.1a1",
     description="A Python wrapper for the Anova 2.",
     long_description="A Python wrapper library for interacting with the Anova 2 over Bluetooth LE on Linux.",
     url="https://github.com/erikcw/pycirculate",
