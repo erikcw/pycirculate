@@ -24,8 +24,8 @@ class AnovaDelegate(btle.DefaultDelegate):
 
 
 class AnovaController(object):
-    def __init__(self):
-        self.anova = btle.Peripheral("78:A5:04:38:B3:FA")
+    def __init__(self, mac_address):
+        self.anova = btle.Peripheral(mac_address)
         self.anova.setDelegate(AnovaDelegate())
         # Service UUID:        0xFFE0
         services = self.anova.getServices()
