@@ -28,6 +28,8 @@ anova.anova_status()
 # -> 'running'
 ```
 
+Additional [examples](https://github.com/erikcw/pycirculate/tree/master/examples) can be found in the examples subdirectory.
+
 ## Status
 
 *Alpha* -- everything seems to work, but needs more testing.
