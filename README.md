@@ -6,7 +6,7 @@ It should work on any Linux with a working BlueZ install.  Most of my testing an
 
 ## Installation
 
-* Install [bluepy](https://github.com/IanHarvey/bluepy) (it's not currently on pypi and needs to be manually installed).
+* Install [bluepy](https://github.com/IanHarvey/bluepy) (pip install bluepy).
 * `pip install pycirculate`
 
 ## Status
