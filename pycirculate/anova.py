@@ -43,7 +43,11 @@ class AnovaController(object):
         self.close()
 
     def close(self):
-        self.anova.disconnect()
+        try:
+            self.anova.disconnect()
+        except AttributeError:
+            # probably had a problem connecting in the first place.
+            pass
 
     def _send_command(self, command):
         command = "{0}\r".format(command)
