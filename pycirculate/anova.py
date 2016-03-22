@@ -86,6 +86,12 @@ class AnovaController(object):
         """
         return self.send_command_async("read temp")
 
+    def read_set_temp(self):
+        """
+        Returns the target temperature as a floating point number. This value will be in the temperature units set on the device.
+        """
+        return self.send_command_async("read set temp")
+
     def set_temp(self, degrees):
         """
         Returns the target temperature as a floating point number. This value will be in the temperature units set on the device.
