@@ -2,7 +2,7 @@
 
 This is a Python wrapper library for interacting with the Anova 2 over Bluetooth LE.
 
-It should work on any Linux with a working BlueZ install.  Most of my testing and development took place on a Raspberry Pi.
+It should work on any Linux with a working [BlueZ](http://www.bluez.org/) install.  Most of my testing and development took place on a Raspberry Pi.
 
 ## Installation
 
@@ -36,8 +36,8 @@ Additional [examples](https://github.com/erikcw/pycirculate/tree/master/examples
 
 ## TODO
 
-* REST API.
-* Testing.
+* Add more features to the [REST API example](https://github.com/erikcw/pycirculate/blob/master/examples/rest.py).
+* More testing.
 
 
 ### Credits
