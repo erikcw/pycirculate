@@ -24,14 +24,21 @@ class AnovaDelegate(btle.DefaultDelegate):
 
 
 class AnovaController(object):
-    def __init__(self, mac_address):
-        self.anova = btle.Peripheral(mac_address)
+    def __init__(self, mac_address, connect=True):
+        self.MAC_ADDRESS = mac_address
+        self.is_connected = False
+        if connect:
+            self.connect()
+
+    def connect(self):
+        self.anova = btle.Peripheral(self.MAC_ADDRESS)
         self.anova.setDelegate(AnovaDelegate())
         # Service UUID:        0xFFE0
         services = self.anova.getServices()
         self.service = self.anova.getServiceByUUID("FFE0")
         # Characteristic UUID: 0xFFE1
         self.characteristic = self.service.getCharacteristics()[0]
+        self.is_connected = True
 
     def __del__(self):
         self.close()
@@ -48,6 +55,7 @@ class AnovaController(object):
         except AttributeError:
             # probably had a problem connecting in the first place.
             pass
+        self.is_connected = False
 
     def _send_command(self, command):
         command = "{0}\r".format(command)
