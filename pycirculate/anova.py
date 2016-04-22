@@ -167,7 +167,7 @@ class AnovaController(object):
 
     def start_timer(self):
         """
-        Starts the timer. Return value is the echoed command. Note that starting the device also automatically starts the timer.
+        Starts the timer. Return value is the echoed command. Note that device must already be started to start the timer.
         """
         return self.send_command_async("start time")
 
