@@ -159,4 +159,4 @@ if __name__ == '__main__':
 
     app.anova_controller = RESTAnovaController(ANOVA_MAC_ADDRESS, logger=app.logger)
 
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=5000, ssl_context='adhoc')
