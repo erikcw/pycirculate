@@ -13,7 +13,9 @@ from pycirculate.anova import AnovaController
 from threading import Timer
 import datetime
 import logging
+import os
 import sys
+import warnings
 
 app = Flask(__name__)
 
@@ -148,7 +150,39 @@ def start_anova():
 
     return jsonify(output)
 
-if __name__ == '__main__':
+
+class AuthMiddleware(object):
+    """
+    HTTP Basic Auth wsgi middleware.  Must be used in conjunction with SSL.
+    """
+
+    def __init__(self, app, username, password):
+        self._app = app
+        self._username = username
+        self._password = password
+
+    def __call__(self, environ, start_response):
+        if self._authenticated(environ.get('HTTP_AUTHORIZATION')):
+            return self._app(environ, start_response)
+        return self._login(environ, start_response)
+
+    def _authenticated(self, header):
+        from base64 import b64decode
+        if not header:
+            return False
+        _, encoded = header.split(None, 1)
+        decoded = b64decode(encoded).decode('UTF-8')
+        username, password = decoded.split(':', 1)
+        return (self._username == username) and (self._password == password)
+
+    def _login(self, environ, start_response):
+        start_response('401 Authentication Required',
+            [('Content-Type', 'text/html'),
+             ('WWW-Authenticate', 'Basic realm="Login"')])
+        return [b'Login']
+
+
+def main():
     # Setup logging
     logging.basicConfig(level=logging.INFO)
     handler = logging.StreamHandler(sys.stdout)
@@ -159,4 +193,14 @@ if __name__ == '__main__':
 
     app.anova_controller = RESTAnovaController(ANOVA_MAC_ADDRESS, logger=app.logger)
 
+    try:
+        username = os.environ["PYCIRCULATE_USERNAME"]
+        password = os.environ["PYCIRCULATE_PASSWORD"]
+        app.wsgi_app = AuthMiddleware(app.wsgi_app, username, password)
+    except KeyError:
+        warnings.warn("Enable HTTP Basic Authentication by setting the 'PYCIRCULATE_USERNAME' and 'PYCIRCULATE_PASSWORD' environment variables.")
+
     app.run(host='0.0.0.0', port=5000, ssl_context='adhoc')
+
+if __name__ == '__main__':
+    main()
