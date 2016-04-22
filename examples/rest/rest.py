@@ -110,7 +110,12 @@ def make_error(status_code, message, sub_code=None, action=None, **kwargs):
 @app.route('/', methods=["GET"])
 def index():
     try:
-        output = {"anova_status": app.anova_controller.anova_status()}
+        timer = app.anova_controller.read_timer()
+        timer = timer.split()
+        output = {
+                "anova_status": app.anova_controller.anova_status(),
+                "timer_status": {"minutes_remaining": int(timer[0]), "status": timer[1],},
+                }
     except Exception as exc:
         app.logger.error(exc)
         return make_error(500, "{0}: {1}".format(repr(exc), str(exc)))
@@ -120,7 +125,7 @@ def index():
 @app.route('/temp', methods=["GET"])
 def get_temp():
     try:
-        output = {"current_temp": app.anova_controller.read_temp(), "set_temp": app.anova_controller.read_set_temp(), "unit": app.anova_controller.read_unit(),}
+        output = {"current_temp": float(app.anova_controller.read_temp()), "set_temp": float(app.anova_controller.read_set_temp()), "unit": app.anova_controller.read_unit(),}
     except Exception as exc:
         app.logger.error(exc)
         return make_error(500, "{0}: {1}".format(repr(exc), str(exc)))
@@ -134,20 +139,47 @@ def set_temp():
     except (KeyError, TypeError):
         abort(400)
     temp = float(temp)
-    output = {"set_temp": app.anova_controller.set_temp(temp)}
+    output = {"set_temp": float(app.anova_controller.set_temp(temp))}
 
     return jsonify(output)
 
 @app.route('/stop', methods=["POST"])
 def stop_anova():
-    output = {"status": app.anova_controller.stop_anova()}
+    stop = app.anova_controller.stop_anova()
+    if stop == "s":
+        stop = "stopped"
+    output = {"status": stop,}
 
     return jsonify(output)
 
 @app.route('/start', methods=["POST"])
 def start_anova():
-    output = {"status": app.anova_controller.start_anova()}
+    status = app.anova_controller.start_anova()
+    if status == "s":
+        status = "starting"
+    output = {"status": status,}
 
+    return jsonify(output)
+
+@app.route('/set-timer', methods=["POST"])
+def set_timer():
+    try:
+        minutes = request.get_json()['minutes']
+    except (KeyError, TypeError):
+        abort(400)
+    output = {"set_minutes": int(app.anova_controller.set_timer(minutes)),}
+    return jsonify(output)
+
+@app.route('/start-timer', methods=["POST"])
+def start_timer():
+    # Anova must be running to start the timer.
+    app.anova_controller.start_anova()
+    output = {"timer_status": app.anova_controller.start_timer()}
+    return jsonify(output)
+
+@app.route('/stop-timer', methods=["POST"])
+def stop_timer():
+    output = {"timer_status": app.anova_controller.stop_timer()}
     return jsonify(output)
 
 
