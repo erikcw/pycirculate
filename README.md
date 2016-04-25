@@ -36,7 +36,7 @@ Additional [examples](https://github.com/erikcw/pycirculate/tree/master/examples
 
 ## TODO
 
-* Add more features to the [REST API example](https://github.com/erikcw/pycirculate/blob/master/examples/rest.py).
+* Add more features to the [REST API example](https://github.com/erikcw/pycirculate/blob/master/examples/rest/).
 * More testing.
 
 
