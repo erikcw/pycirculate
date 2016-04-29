@@ -13,6 +13,7 @@ from pycirculate.anova import AnovaController
 from threading import Timer
 import datetime
 import logging
+import json
 import os
 import sys
 import warnings
@@ -209,9 +210,10 @@ class AuthMiddleware(object):
 
     def _login(self, environ, start_response):
         start_response('401 Authentication Required',
-            [('Content-Type', 'text/html'),
+            [('Content-Type', 'application/json'),
              ('WWW-Authenticate', 'Basic realm="Login"')])
-        return [b'Login']
+        output = {"error": "Login"}
+        return [json.dumps(output)]
 
 
 def main():
