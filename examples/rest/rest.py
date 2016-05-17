@@ -31,7 +31,7 @@ class RESTAnovaController(AnovaController):
     NOTE: Only a single BlueTooth connection can be open to the Anova at a time.
     """
 
-    TIMEOUT = 1 * 60 # Keep the connection open for this many seconds.
+    TIMEOUT = 5 * 60 # Keep the connection open for this many seconds.
     TIMEOUT_HEARTBEAT = 20
 
     def __init__(self, mac_address, connect=True, logger=None):
@@ -42,7 +42,17 @@ class RESTAnovaController(AnovaController):
             self.logger = logging.getLogger()
         super(RESTAnovaController, self).__init__(mac_address, connect=connect)
 
+    def set_timeout(self, timeout):
+        """
+        Adjust the timeout period (in seconds).
+        """
+        self.TIMEOUT = timeout
+
     def timeout(self, seconds=None):
+        """
+        Determines whether the Bluetooth connection should be timed out
+        based on the timestamp of the last exectuted command.
+        """
         if not seconds:
             seconds = self.TIMEOUT
         timeout_at = self.last_command_at + datetime.timedelta(seconds=seconds)
@@ -181,6 +191,19 @@ def start_timer():
 @app.route('/stop-timer', methods=["POST"])
 def stop_timer():
     output = {"timer_status": app.anova_controller.stop_timer()}
+    return jsonify(output)
+
+@app.route('/set-timeout', methods=["POST"])
+def set_timeout():
+    """
+    Adjust the Bluetooth connection timeout length.
+    """
+    try:
+        seconds = int(request.get_json()['timeout_seconds'])
+    except (KeyError, TypeError):
+        abort(400)
+    app.anova_controller.set_timeout(seconds)
+    output = {"timeout_seconds": seconds,}
     return jsonify(output)
 
 
