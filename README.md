@@ -6,6 +6,7 @@ It should work on any Linux with a working [BlueZ](http://www.bluez.org/) instal
 
 ## Installation
 
+* Install libglib (`sudo apt-get install libglib2.0-dev`)
 * Install [bluepy](https://github.com/IanHarvey/bluepy) (`pip install bluepy`).
 * `pip install pycirculate`
 
